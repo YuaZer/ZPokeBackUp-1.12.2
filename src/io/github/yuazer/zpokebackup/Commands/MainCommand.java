@@ -21,12 +21,48 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage("§b/zpokebackup savePoke 玩家ID §a保存玩家背包宝可梦数据");
                 sender.sendMessage("§b/zpokebackup loadPC 玩家ID §a加载玩家PC宝可梦数据");
                 sender.sendMessage("§b/zpokebackup loadPoke 玩家ID §a加载玩家背包宝可梦数据");
+                sender.sendMessage("§b/zpokebackup saveAll §a存储目前所有在线玩家宝可梦数据");
+                sender.sendMessage("§b/zpokebackup loadAll §a读取目前所有在线玩家宝可梦数据");
                 sender.sendMessage("§b/zpokebackup reload §a重载配置文件");
                 return true;
             }
             if (args[0].equalsIgnoreCase("reload") && sender.isOp()) {
                 Main.getInstance().reloadConfig();
                 sender.sendMessage(YamlUtils.getConfigMessage("Message.reload"));
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("saveAll") && sender.isOp()) {
+                if (!YamlUtils.getConfigMessage("Message.startSave").isEmpty()) {
+                    System.out.println(YamlUtils.getConfigMessage("Message.startSave"));
+                }
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    try {
+                        PokeUtils.savePlayerPCData(player);
+                        PokeUtils.savePlayerPokeData(player);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if (!YamlUtils.getConfigMessage("Message.overSave").isEmpty()) {
+                    System.out.println(YamlUtils.getConfigMessage("Message.overSave"));
+                }
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("loadAll") && sender.isOp()) {
+                if (!YamlUtils.getConfigMessage("Message.startLoad").isEmpty()) {
+                    System.out.println(YamlUtils.getConfigMessage("Message.startLoad"));
+                }
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    try {
+                        PokeUtils.loadPCData(player);
+                        PokeUtils.loadPokeData(player);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if (!YamlUtils.getConfigMessage("Message.overLoad").isEmpty()) {
+                    System.out.println(YamlUtils.getConfigMessage("Message.overLoad"));
+                }
                 return true;
             }
             if (args[0].equalsIgnoreCase("savePC") && sender.isOp()) {
