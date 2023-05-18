@@ -1,0 +1,10 @@
+name: ZPokeBackUp
+main: io.github.yuazer.zpokebackup.Main
+version: 0.1
+authors:
+  - YuaZer
+commands:
+  zpokebackup:
+    aliases:
+      - zpbu
+    description: the command for this plugin

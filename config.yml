@@ -1,0 +1,11 @@
+Message:
+  reload: "&b[ZPokeBackUp] &a重载成功!"
+  pcSaveSuccess: "&bPC宝可梦数据存储成功"
+  pokeSaveSuccess: "&b背包中的宝可梦数据存储成功"
+  pcLoadSuccess: "&aPC宝可梦数据读取成功"
+  pokeLoadSuccess: "&a背包中的宝可梦数据读取成功"
+  startSave: "&a正在存储当前所有在线玩家的宝可梦数据..."
+  overSave: "&a当前所有玩家的宝可梦数据存储成功!"
+GlobalSetting:
+  #自动存储周期(单位:秒)
+  time: 300

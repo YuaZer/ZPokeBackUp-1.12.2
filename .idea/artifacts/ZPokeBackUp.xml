@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ZPokeBackUp">
+    <output-path>$PROJECT_DIR$/out/artifacts/ZPokeBackUp</output-path>
+    <root id="archive" name="ZPokeBackUp.jar">
+      <element id="module-output" name="ZPokeBackUp" />
+      <element id="file-copy" path="$PROJECT_DIR$/config.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+    </root>
+  </artifact>
+</component>
