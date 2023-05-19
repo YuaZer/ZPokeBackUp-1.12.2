@@ -8,6 +8,7 @@ import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Vector;
 
 public class PokeUtils {
     //将宝可梦存为NBT文件
@@ -43,6 +45,9 @@ public class PokeUtils {
         return team;
     }
 
+    public static void blockTest(Player player, Block block){
+        block.getType().getMaterialType().name();
+    }
     public static boolean hasFilesInFolder(File folder) {
         if (folder.isDirectory()) {
             File[] files = folder.listFiles();
