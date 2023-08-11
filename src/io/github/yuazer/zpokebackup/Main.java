@@ -30,22 +30,26 @@ public class Main extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!YamlUtils.getConfigMessage("Message.startSave").isEmpty()) {
-                    System.out.println(YamlUtils.getConfigMessage("Message.startSave"));
-                }
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    try {
-                        PokeUtils.savePlayerPCData(player);
-                        PokeUtils.savePlayerPokeData(player);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                if (!YamlUtils.getConfigMessage("Message.overSave").isEmpty()) {
-                    System.out.println(YamlUtils.getConfigMessage("Message.overSave"));
-                }
+                runSave();
             }
         }.runTaskTimerAsynchronously(this, 0L, YamlUtils.getConfigInt("GlobalSetting.time") * 20L);
+    }
+
+    public static void runSave() {
+        if (!YamlUtils.getConfigMessage("Message.startSave").isEmpty()) {
+            System.out.println(YamlUtils.getConfigMessage("Message.startSave"));
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            try {
+                PokeUtils.savePlayerPCData(player);
+                PokeUtils.savePlayerPokeData(player);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (!YamlUtils.getConfigMessage("Message.overSave").isEmpty()) {
+            System.out.println(YamlUtils.getConfigMessage("Message.overSave"));
+        }
     }
 
     public void loadComplate() {
@@ -65,7 +69,7 @@ public class Main extends JavaPlugin {
                     System.out.println("§a请将以下内容截图发给QQ[2066410835]");
                     System.out.println("§b" + verifyCheck.getmac());
                     Bukkit.getPluginManager().disablePlugin(this);
-                    break;
+                    return;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

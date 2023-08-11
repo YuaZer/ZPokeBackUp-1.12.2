@@ -8,17 +8,14 @@ import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.Vector;
 
 public class PokeUtils {
     //将宝可梦存为NBT文件
@@ -30,8 +27,7 @@ public class PokeUtils {
 
     //从文件中的NBT获取宝可梦
     public static Pokemon getPokemonInFile_NBT(File file) throws IOException {
-        Pokemon pokemon = Pixelmon.pokemonFactory.create(CompressedStreamTools.func_74797_a(file));
-        return pokemon;
+        return Pixelmon.pokemonFactory.create(CompressedStreamTools.func_74797_a(file))==null?null:Pixelmon.pokemonFactory.create(CompressedStreamTools.func_74797_a(file));
     }
 
     public static List<Pokemon> getTeam(PlayerPartyStorage pps) {
@@ -45,9 +41,6 @@ public class PokeUtils {
         return team;
     }
 
-    public static void blockTest(Player player, Block block){
-        block.getType().getMaterialType().name();
-    }
     public static boolean hasFilesInFolder(File folder) {
         if (folder.isDirectory()) {
             File[] files = folder.listFiles();
@@ -77,7 +70,7 @@ public class PokeUtils {
 
     public static void savePlayerPCData(Player player) throws IOException {
         //保存PC
-        File dir = new File("plugins/ZPokeBackUp/pc/" + player.getName());
+        File dir = new File("plugins/ZPokeBackUp/" + getTime() + "/pc/" + player.getName());
         //如果文件夹不存在，就自动创建它
         dir.mkdirs();
         if (hasFilesInFolder(dir)) {
@@ -97,7 +90,7 @@ public class PokeUtils {
     }
 
     public static void savePlayerPokeData(Player player) throws IOException {
-        File dir = new File("plugins/ZPokeBackUp/poke/" + player.getName());
+        File dir = new File("plugins/ZPokeBackUp/" + getTime() + "/poke/" + player.getName());
         dir.mkdirs();
         if (hasFilesInFolder(dir)) {
             cleanupFolder(dir);
@@ -109,7 +102,7 @@ public class PokeUtils {
         }
     }
 
-    public static void loadPCData(Player player) throws IOException {
+    public static void loadPCData(Player player, String time) throws IOException {
         PCStorage pcStorage = Pixelmon.storageManager.getPCForPlayer(player.getUniqueId());
         //删除玩家PC宝可梦
         for (PCBox box : pcStorage.getBoxes()) {
@@ -120,20 +113,30 @@ public class PokeUtils {
                 }
             }
         }
-        File dir = new File("plugins/ZPokeBackUp/pc/" + player.getName());
+        File dir = new File("plugins/ZPokeBackUp/" + time + "/pc/" + player.getName());
         if (dir.listFiles() != null) {
             //获取PC宝可梦并存储
             for (File file : dir.listFiles()) {
-                Pokemon pokemon = getPokemonInFile_NBT(file);
-                String name = file.getName().replace(".zps", "");
-                int box = Integer.parseInt(name.split("_")[0]);
-                int order = Integer.parseInt(name.split("_")[1]);
-                pcStorage.set(box, order, pokemon);
+                try {
+                    Pokemon pokemon = getPokemonInFile_NBT(file);
+                    String name = file.getName().replace(".zps", "");
+                    int box = Integer.parseInt(name.split("_")[0]);
+                    int order = Integer.parseInt(name.split("_")[1]);
+                    pcStorage.set(box, order, pokemon);
+                } catch (NullPointerException e) {
+                    continue;
+                }
             }
         }
     }
 
-    public static void loadPokeData(Player player) throws IOException {
+    public static String getTime() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+        return now.format(formatter);
+    }
+
+    public static void loadPokeData(Player player, String time) throws IOException {
         PlayerPartyStorage pps = Pixelmon.storageManager.getParty(player.getUniqueId());
         //清空背包宝可梦
         for (int i = 0; i <= 5; i++) {
@@ -141,10 +144,17 @@ public class PokeUtils {
                 pps.set(i, null);
             }
         }
-        File dir = new File("plugins/ZPokeBackUp/poke/" + player.getName());
+        File dir = new File("plugins/ZPokeBackUp/" + time + "/poke/" + player.getName());
         if (dir.listFiles() != null) {
             for (File file : dir.listFiles()) {
-                pps.add(getPokemonInFile_NBT(file));
+                try{
+                    Pokemon pokemon = getPokemonInFile_NBT(file);
+                    if (pokemon != null) {
+                        pps.add(getPokemonInFile_NBT(file));
+                    }
+                }catch (NullPointerException e){
+                    continue;
+                }
             }
         }
     }

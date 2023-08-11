@@ -27,7 +27,7 @@ public class verifyCheck {
         }
         Socket socket = null;
         try {
-            socket = new Socket("s1.abrnya.com", 22653);
+            socket = new Socket("s1.abrnya.com", 11613);
             //连接到服务端
         } catch (IOException e) {
             Bukkit.getPluginManager().disablePlugin(Main.getInstance());

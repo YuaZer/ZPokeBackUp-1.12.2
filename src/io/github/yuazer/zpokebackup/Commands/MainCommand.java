@@ -19,10 +19,10 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage("§b/zpokebackup §a简写-> §b/zpbu");
                 sender.sendMessage("§b/zpokebackup savePC 玩家ID §a保存玩家PC宝可梦数据");
                 sender.sendMessage("§b/zpokebackup savePoke 玩家ID §a保存玩家背包宝可梦数据");
-                sender.sendMessage("§b/zpokebackup loadPC 玩家ID §a加载玩家PC宝可梦数据");
-                sender.sendMessage("§b/zpokebackup loadPoke 玩家ID §a加载玩家背包宝可梦数据");
+                sender.sendMessage("§b/zpokebackup loadPC 玩家ID 时间段 §a加载玩家PC宝可梦数据");
+                sender.sendMessage("§b/zpokebackup loadPoke 玩家ID 时间段 §a加载玩家背包宝可梦数据");
                 sender.sendMessage("§b/zpokebackup saveAll §a存储目前所有在线玩家宝可梦数据");
-                sender.sendMessage("§b/zpokebackup loadAll §a读取目前所有在线玩家宝可梦数据");
+                sender.sendMessage("§b/zpokebackup loadAll 时间段 §a读取目前所有在线玩家宝可梦数据");
                 sender.sendMessage("§b/zpokebackup reload §a重载配置文件");
                 return true;
             }
@@ -32,20 +32,7 @@ public class MainCommand implements CommandExecutor {
                 return true;
             }
             if (args[0].equalsIgnoreCase("saveAll") && sender.isOp()) {
-                if (!YamlUtils.getConfigMessage("Message.startSave").isEmpty()) {
-                    System.out.println(YamlUtils.getConfigMessage("Message.startSave"));
-                }
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    try {
-                        PokeUtils.savePlayerPCData(player);
-                        PokeUtils.savePlayerPokeData(player);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                if (!YamlUtils.getConfigMessage("Message.overSave").isEmpty()) {
-                    System.out.println(YamlUtils.getConfigMessage("Message.overSave"));
-                }
+                Main.runSave();
                 return true;
             }
             if (args[0].equalsIgnoreCase("loadAll") && sender.isOp()) {
@@ -54,8 +41,8 @@ public class MainCommand implements CommandExecutor {
                 }
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     try {
-                        PokeUtils.loadPCData(player);
-                        PokeUtils.loadPokeData(player);
+                        PokeUtils.loadPCData(player,args[2]);
+                        PokeUtils.loadPokeData(player,args[2]);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -93,7 +80,7 @@ public class MainCommand implements CommandExecutor {
                 Player player = Bukkit.getPlayer(args[1]);
                 if (player != null) {
                     try {
-                        PokeUtils.loadPCData(player);
+                        PokeUtils.loadPCData(player, args[2]);
                         sender.sendMessage(YamlUtils.getConfigMessage("Message.pcLoadSuccess"));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -105,7 +92,7 @@ public class MainCommand implements CommandExecutor {
                 Player player = Bukkit.getPlayer(args[1]);
                 if (player != null) {
                     try {
-                        PokeUtils.loadPokeData(player);
+                        PokeUtils.loadPokeData(player, args[2]);
                         sender.sendMessage(YamlUtils.getConfigMessage("Message.pokeLoadSuccess"));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
