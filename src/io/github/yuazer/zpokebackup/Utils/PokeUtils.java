@@ -80,6 +80,9 @@ public class PokeUtils {
         for (PCBox box : pcStorage.getBoxes()) {
             for (Pokemon pokemon : box.getAll()) {
                 if (pokemon != null) {
+                    if (YamlUtils.getConfigStringList("SkipPokemon").contains(pokemon.getSpecies().getPokemonName())){
+                        continue;
+                    }
                     StoragePosition pos = box.getPosition(pokemon);
                     //创建一个File对象，表示要保存宝可梦的文件
                     File file = new File(dir, pos.box + "_" + pos.order + ".zps");
@@ -97,6 +100,9 @@ public class PokeUtils {
         }
         PlayerPartyStorage pps = Pixelmon.storageManager.getParty(player.getUniqueId());
         for (Pokemon pokemon : getTeam(pps)) {
+            if (YamlUtils.getConfigStringList("SkipPokemon").contains(pokemon.getSpecies().getPokemonName())){
+                continue;
+            }
             File file = new File(dir, pokemon.getUUID() + ".zps");
             setPokemonInFile_NBT(pokemon, file);
         }

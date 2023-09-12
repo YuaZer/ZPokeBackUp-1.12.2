@@ -17,6 +17,9 @@ public class YamlUtils {
             return -1;
         }
     }
+    public static List<String> getConfigStringList(String path){
+        return Main.getInstance().getConfig().getStringList(path);
+    }
     public static List<String> getAllFile(String directoryPath, boolean isAddDirectory) {
         List<String> list = new ArrayList<>();
         File baseFile = new File(directoryPath);

@@ -11,3 +11,5 @@ Message:
 GlobalSetting:
   #自动存储周期(单位:秒)
   time: 300
+SkipPokemon:
+  - "Absol"
